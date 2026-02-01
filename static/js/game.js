@@ -23,10 +23,26 @@
     winner: null,
   };
 
+  function playMoveSound() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 520;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    } catch (_) {}
+  }
+
   const boardEl = document.getElementById('board');
   const statusEl = document.getElementById('status');
   const difficultyEl = document.getElementById('difficulty');
-  const redIsAiEl = document.getElementById('redIsAi');
+  const blackIsAiEl = document.getElementById('blackIsAi');
   const btnNewGame = document.getElementById('btnNewGame');
   const btnHistory = document.getElementById('btnHistory');
   const historyPanel = document.getElementById('historyPanel');
@@ -251,6 +267,7 @@
           statusEl.textContent = data.error;
           return;
         }
+        playMoveSound();
         state.board = data.board;
         state.turn = data.turn;
         state.selected = null;
@@ -266,6 +283,7 @@
             state.gameOver = true;
             state.winner = data.winner;
           }
+          playMoveSound();
         }
         renderBoard();
       })
@@ -276,7 +294,8 @@
 
   function startNewGame() {
     const difficulty = difficultyEl.value;
-    const redIsAi = redIsAiEl.checked;
+    const blackIsAi = blackIsAiEl.checked;
+    const redIsAi = !blackIsAi;
     fetch(API_BASE + '/api/game/new', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -299,6 +318,7 @@
             .then(r => r.json())
             .then(d => {
               if (d.board) {
+                playMoveSound();
                 state.board = d.board;
                 state.turn = d.turn;
                 if (d.game_over) { state.gameOver = true; state.winner = d.winner; }
