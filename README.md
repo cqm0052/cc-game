@@ -24,3 +24,20 @@ python app.py
 - `ai_engine.py` - AI（普通/困难/地狱）
 - `history_store.py` - 对战历史存储（JSON 文件，存于 `data/`）
 - `static/` - 前端（HTML/CSS/JS）
+
+## 推送到 GitHub
+
+本地已提交，只需在本机终端完成认证后执行 `git push`。
+
+**方式一：SSH（推荐）**
+
+1. 若尚未配置 SSH 公钥：`ssh-keygen -t ed25519 -C "你的邮箱" -f ~/.ssh/id_ed25519 -N ""`
+2. 查看公钥：`cat ~/.ssh/id_ed25519.pub`
+3. 在 GitHub：**Settings → SSH and GPG keys → New SSH key**，粘贴公钥并保存
+4. 在项目目录执行：`git push -u origin main`
+
+**方式二：HTTPS + Personal Access Token**
+
+1. 在 GitHub：**Settings → Developer settings → Personal access tokens** 生成一个 token（勾选 `repo`）
+2. 在项目目录执行：`git remote set-url origin https://github.com/cqm0052/cc-game.git`，再执行 `git push -u origin main`
+3. 用户名填 GitHub 用户名，密码处粘贴上述 token
