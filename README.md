@@ -1,2 +1,2 @@
 # cc-game
-Chinese chess gamen
+Chinese chess game
