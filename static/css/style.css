@@ -1,0 +1,311 @@
+/* 中国象棋 - 样式 */
+:root {
+  --bg-page: #1a1a2e;
+  --bg-board: #c9a959;
+  --line-color: #2d1f0e;
+  --cell-size: 56px;
+  --piece-red: #c0392b;
+  --piece-black: #1c1c1c;
+  --primary: #3498db;
+  --primary-hover: #2980b9;
+  --panel-bg: #16213e;
+  --text: #ecf0f1;
+  --text-muted: #95a5a6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg-page);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.controls label {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.controls select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: var(--panel-bg);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.checkbox-wrap input {
+  cursor: pointer;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  color: var(--text);
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.btn.primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn.primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn.icon {
+  padding: 4px 10px;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.main {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.board-wrap {
+  flex-shrink: 0;
+}
+
+.board {
+  width: calc(9 * var(--cell-size));
+  height: calc(10 * var(--cell-size));
+  background: var(--bg-board);
+  border: 3px solid var(--line-color);
+  border-radius: 4px;
+  padding: 0;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(9, var(--cell-size));
+  grid-template-rows: repeat(10, var(--cell-size));
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 交叉点 + 线：用背景画横竖线 */
+.board-grid::before {
+  content: "";
+  position: absolute;
+  left: var(--cell-size);
+  top: var(--cell-size);
+  right: var(--cell-size);
+  bottom: var(--cell-size);
+  background-image:
+    linear-gradient(to bottom, var(--line-color) 1px, transparent 1px),
+    linear-gradient(to right, var(--line-color) 1px, transparent 1px);
+  background-size: var(--cell-size) var(--cell-size);
+  pointer-events: none;
+}
+
+.board-river-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.board-grid .cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.cell.selected {
+  background: rgba(52, 152, 219, 0.4);
+  border-radius: 50%;
+}
+
+.cell.highlight {
+  background: rgba(46, 204, 113, 0.35);
+  border-radius: 50%;
+}
+
+.cell .piece {
+  font-size: calc(var(--cell-size) * 0.7);
+  font-weight: bold;
+  line-height: 1;
+  user-select: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.cell .piece.red {
+  color: var(--piece-red);
+}
+
+.cell .piece.black {
+  color: var(--piece-black);
+}
+
+/* 河界文字 */
+.board-river-overlay .river-label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  color: var(--line-color);
+  z-index: 0;
+}
+
+.board-river-overlay .river-label.top {
+  top: calc(4.5 * var(--cell-size));
+}
+
+.board-river-overlay .river-label.bottom {
+  bottom: calc(4.5 * var(--cell-size));
+}
+
+.status {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--text-muted);
+  min-height: 24px;
+}
+
+.status.winner {
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+.history-panel {
+  flex: 1;
+  min-width: 260px;
+  max-width: 360px;
+  background: var(--panel-bg);
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.history-panel.hidden {
+  display: none;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.history-list li {
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.history-list li:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.history-list .meta {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.history-list .result {
+  font-weight: 600;
+}
+
+.history-list .result.red { color: #e74c3c; }
+.history-list .result.black { color: #2c3e50; }
+.history-list .result.draw { color: #f39c12; }
+
+@media (max-width: 640px) {
+  :root {
+    --cell-size: 36px;
+  }
+  .main {
+    flex-direction: column;
+  }
+  .history-panel {
+    max-width: 100%;
+  }
+}

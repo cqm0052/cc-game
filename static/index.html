@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中国象棋</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>中国象棋</h1>
+      <div class="controls">
+        <label>难度：</label>
+        <select id="difficulty">
+          <option value="normal">普通</option>
+          <option value="hard">困难</option>
+          <option value="hell">地狱</option>
+        </select>
+        <label class="checkbox-wrap">
+          <input type="checkbox" id="redIsAi" />
+          <span>红方为 AI</span>
+        </label>
+        <button id="btnNewGame" class="btn primary">新对局</button>
+        <button id="btnHistory" class="btn">对战历史</button>
+      </div>
+    </header>
+    <main class="main">
+      <div class="board-wrap">
+        <div id="board" class="board" role="grid" aria-label="象棋棋盘"></div>
+        <div id="status" class="status"></div>
+      </div>
+      <aside id="historyPanel" class="history-panel hidden">
+        <div class="panel-header">
+          <h2>对战历史</h2>
+          <button id="btnCloseHistory" class="btn icon">×</button>
+        </div>
+        <ul id="historyList" class="history-list"></ul>
+      </aside>
+    </main>
+  </div>
+  <script src="js/game.js"></script>
+</body>
+</html>
