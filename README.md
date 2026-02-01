@@ -41,3 +41,23 @@ python app.py
 1. 在 GitHub：**Settings → Developer settings → Personal access tokens** 生成一个 token（勾选 `repo`）
 2. 在项目目录执行：`git remote set-url origin https://github.com/cqm0052/cc-game.git`，再执行 `git push -u origin main`
 3. 用户名填 GitHub 用户名，密码处粘贴上述 token
+
+## 部署到 Railway
+
+项目已配置 `Procfile` 与 `gunicorn`，可按以下步骤部署。
+
+**若控制台显示 “No service”**：说明还没有部署过，需要先在终端执行第 3 步 `railway up`，部署成功后控制台里会出现服务。
+
+1. **登录**（会打开浏览器）：  
+   `railway login`
+
+2. **初始化并关联项目**（首次选 “Create new project”）：  
+   `railway init`
+
+3. **部署**（这一步会创建服务并上传代码，必须执行）：  
+   `railway up`
+
+4. **生成公网域名**：  
+   Railway 控制台 https://railway.app → 你的项目 → 出现的服务 → Settings → Networking → Generate Domain
+
+部署完成后用生成的域名访问即可（对战历史在 Railway 上为内存/临时存储，重启会清空）。

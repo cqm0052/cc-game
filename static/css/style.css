@@ -1,16 +1,22 @@
 /* 中国象棋 - 样式 */
 :root {
-  --bg-page: #1a1a2e;
-  --bg-board: #c9a959;
-  --line-color: #2d1f0e;
+  --bg-page: #0f1419;
+  --bg-board: #d4a84b;
+  --bg-board-light: #e8c97a;
+  --line-color: #5c3d1e;
+  --line-width: 2px;
   --cell-size: 56px;
-  --piece-red: #c0392b;
-  --piece-black: #1c1c1c;
-  --primary: #3498db;
-  --primary-hover: #2980b9;
-  --panel-bg: #16213e;
-  --text: #ecf0f1;
-  --text-muted: #95a5a6;
+  --piece-red: #b71c1c;
+  --piece-red-shadow: #8b0000;
+  --piece-black: #1a1a1a;
+  --piece-black-shadow: #000;
+  --primary: #c9a227;
+  --primary-hover: #d4af37;
+  --panel-bg: #1a2332;
+  --text: #e8e6e3;
+  --text-muted: #9ca3af;
+  --board-frame: #4a3728;
+  --palace-line: rgba(92, 61, 30, 0.6);
 }
 
 * {
@@ -38,13 +44,15 @@ body {
   gap: 16px;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .header h1 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.05em;
 }
 
 .controls {
@@ -96,12 +104,15 @@ body {
 }
 
 .btn.primary {
-  background: var(--primary);
-  color: #fff;
+  background: linear-gradient(180deg, var(--primary-hover) 0%, var(--primary) 100%);
+  color: #1a1a1a;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
 .btn.primary:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(180deg, var(--primary) 0%, #e0b840 100%);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
 
 .btn.icon {
@@ -125,12 +136,15 @@ body {
   height: calc(10 * var(--cell-size));
   min-width: calc(9 * var(--cell-size));
   min-height: calc(10 * var(--cell-size));
-  background: var(--bg-board);
-  border: 3px solid var(--line-color);
-  border-radius: 4px;
+  background: linear-gradient(145deg, var(--bg-board-light) 0%, var(--bg-board) 40%, #c4953a 100%);
+  border: 6px solid var(--board-frame);
+  border-radius: 8px;
   padding: 0;
   position: relative;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.25),
+    0 12px 32px rgba(0,0,0,0.4),
+    0 4px 0 var(--board-frame);
   overflow: hidden;
 }
 
@@ -146,19 +160,62 @@ body {
   box-sizing: border-box;
 }
 
-/* 交叉点 + 线：用背景画横竖线 */
+/* 全棋盘网格线：从 0 到边缘，包含最外圈分割线（10 竖线 × 11 横线） */
 .board-grid::before {
   content: "";
   position: absolute;
-  left: var(--cell-size);
-  top: var(--cell-size);
-  right: var(--cell-size);
-  bottom: var(--cell-size);
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   background-image:
-    linear-gradient(to bottom, var(--line-color) 1px, transparent 1px),
-    linear-gradient(to right, var(--line-color) 1px, transparent 1px);
-  background-size: var(--cell-size) var(--cell-size);
+    /* 最右竖线 */
+    linear-gradient(to right, transparent calc(100% - var(--line-width)), var(--line-color) calc(100% - var(--line-width)), var(--line-color) 100%),
+    /* 最下横线 */
+    linear-gradient(to bottom, transparent calc(100% - var(--line-width)), var(--line-color) calc(100% - var(--line-width)), var(--line-color) 100%),
+    /* 竖线（0, cell, ..., 8*cell） */
+    linear-gradient(to right, var(--line-color) var(--line-width), transparent var(--line-width)),
+    /* 横线（0, cell, ..., 9*cell） */
+    linear-gradient(to bottom, var(--line-color) var(--line-width), transparent var(--line-width));
+  background-size:
+    100% 100%,
+    100% 100%,
+    var(--cell-size) var(--cell-size),
+    var(--cell-size) var(--cell-size);
+  background-position: 0 0, 0 0, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
   pointer-events: none;
+  z-index: 0;
+}
+
+/* 九宫斜线（红方、黑方各一个米字格） */
+.board-grid::after {
+  content: "";
+  position: absolute;
+  left: calc(3 * var(--cell-size));
+  top: 0;
+  width: calc(3 * var(--cell-size));
+  height: calc(3 * var(--cell-size));
+  background: linear-gradient(135deg, transparent 49%, var(--palace-line) 49%, var(--palace-line) 51%, transparent 51%),
+              linear-gradient(45deg, transparent 49%, var(--palace-line) 49%, var(--palace-line) 51%, transparent 51%);
+  background-size: 100% 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 红方九宫斜线（底部 3x3） */
+.board::after {
+  content: "";
+  position: absolute;
+  left: calc(3 * var(--cell-size));
+  bottom: 0;
+  width: calc(3 * var(--cell-size));
+  height: calc(3 * var(--cell-size));
+  background: linear-gradient(135deg, transparent 49%, var(--palace-line) 49%, var(--palace-line) 51%, transparent 51%),
+              linear-gradient(45deg, transparent 49%, var(--palace-line) 49%, var(--palace-line) 51%, transparent 51%);
+  background-size: 100% 100%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .board-river-overlay {
@@ -189,32 +246,36 @@ body {
 }
 
 .cell.selected {
-  background: rgba(52, 152, 219, 0.4);
+  background: rgba(201, 162, 39, 0.45);
   border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(92, 61, 30, 0.5);
 }
 
 .cell.highlight {
-  background: rgba(46, 204, 113, 0.35);
+  background: rgba(76, 175, 80, 0.3);
   border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(56, 142, 60, 0.4);
 }
 
 .cell .piece {
-  font-size: calc(var(--cell-size) * 0.62);
+  font-size: calc(var(--cell-size) * 0.6);
   font-weight: bold;
   line-height: 1;
   user-select: none;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
   display: block;
   width: 100%;
   text-align: center;
+  letter-spacing: 0.02em;
 }
 
 .cell .piece.red {
   color: var(--piece-red);
+  text-shadow: 0 1px 0 var(--piece-red-shadow), 0 2px 4px rgba(0,0,0,0.25);
 }
 
 .cell .piece.black {
   color: var(--piece-black);
+  text-shadow: 0 1px 0 var(--piece-black-shadow), 0 2px 4px rgba(0,0,0,0.3);
 }
 
 /* 河界文字 */
@@ -222,15 +283,16 @@ body {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 18px;
+  font-size: calc(var(--cell-size) * 0.32);
+  font-weight: 600;
   color: var(--line-color);
+  letter-spacing: 0.2em;
   z-index: 0;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.2);
 }
-
 .board-river-overlay .river-label.top {
   top: calc(4.5 * var(--cell-size));
 }
-
 .board-river-overlay .river-label.bottom {
   bottom: calc(4.5 * var(--cell-size));
 }
