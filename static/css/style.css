@@ -129,6 +129,7 @@ body {
 
 .board-wrap {
   flex-shrink: 0;
+  padding: calc(var(--cell-size) * 0.32);
 }
 
 .board {
@@ -145,7 +146,7 @@ body {
     inset 0 1px 0 rgba(255,255,255,0.25),
     0 12px 32px rgba(0,0,0,0.4),
     0 4px 0 var(--board-frame);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .board-grid {
